@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import '../model/task_model.dart';
+import '../view_model/task_view_model.dart';
 
-class TaskDetailsScreen extends StatefulWidget {
-  final Task task;
+class AddNewTaskScreen extends StatefulWidget {
+  TaskViewModel viewModel;
 
-  TaskDetailsScreen({required this.task});
+  AddNewTaskScreen({required this.viewModel});
 
   @override
-  _TaskDetailsScreenState createState() => _TaskDetailsScreenState();
+  _AddNewTaskScreenState createState() => _AddNewTaskScreenState();
 }
 
-class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
+class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
   late int _priority;
@@ -20,11 +21,11 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.task.title);
-    _descriptionController = TextEditingController(text: widget.task.description);
-    _priority = widget.task.priority;
-    _status = widget.task.status;
-    _dueDate = widget.task.dueDate;
+    _titleController = TextEditingController(text: '');
+    _descriptionController = TextEditingController(text: '');
+    _priority = 1;
+    _status = TaskStatus.pending;
+    _dueDate = DateTime.now();
   }
 
   @override
@@ -49,17 +50,9 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   }
 
   void _saveTask() {
-    setState(() {
-      widget.task.update(
-        title: _titleController.text,
-        description: _descriptionController.text,
-        priority: _priority,
-        status: _status,
-        dueDate: _dueDate,
-      );
-    });
-
-    Navigator.pop(context, widget.task);
+   final task =  Task(description: _descriptionController.text,title: _titleController.text,status: _status,dueDate: _dueDate, priority: _priority, createdAt: DateTime.now());
+    widget.viewModel.addNewTask(task);
+    Navigator.pop(context);
   }
 
   @override
@@ -120,10 +113,10 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                     items: TaskStatus.values
                         .map(
                           (status) => DropdownMenuItem(
-                        value: status,
-                        child: Text(status.toString().split('.').last),
-                      ),
-                    )
+                            value: status,
+                            child: Text(status.toString().split('.').last),
+                          ),
+                        )
                         .toList(),
                     onChanged: (value) {
                       setState(() {
@@ -152,7 +145,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
               Center(
                 child: ElevatedButton(
                   onPressed: _saveTask,
-                  child: Text('Save'),
+                  child: Text('Add New Task'),
                 ),
               ),
             ],

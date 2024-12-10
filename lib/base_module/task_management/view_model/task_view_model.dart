@@ -6,13 +6,29 @@ import 'package:flutter/material.dart';
 class TaskViewModel extends ChangeNotifier {
   List<List<Task>> allTaskList = [];
 
+  TaskDataManager dataManager = TaskDataManager();
+
   void getAllTaskList() async {
     allTaskList = [
-      Task.getInProgressList(),
-      Task.getCompletedList(),
-      Task.getPendingList()
+      dataManager.getInProgressList(),
+      dataManager.getCompletedList(),
+      dataManager.getPendingList()
     ];
   }
+
+  void addNewTask(Task task) {
+    dataManager.addNewTask(task);
+    getAllTaskList();
+    notifyListeners();
+  }
+
+  void removeATask(Task task) {
+    dataManager.removeTask(task);
+    getAllTaskList();
+    notifyListeners();
+  }
+
+
 
   void changeThePriorityOfTask(Task task) {
     int newPriority; // Declare with a type and initialize

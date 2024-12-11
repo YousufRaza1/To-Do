@@ -67,6 +67,38 @@ class Task extends ChangeNotifier {
   String toString() {
     return 'Task(id: $id, title: $title, status: $status, dueDate: $dueDate, priority: $priority)';
   }
+
+  // Convert Task to Map<String, dynamic>
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description,
+      'status': status.index, // Save as int
+      'dueDate': dueDate?.millisecondsSinceEpoch, // Convert to int
+      'priority': priority,
+      'createdAt': createdAt.millisecondsSinceEpoch,
+      'updatedAt': updatedAt?.millisecondsSinceEpoch,
+    };
+  }
+
+  // Create Task from Map<String, dynamic>
+  factory Task.fromMap(Map<String, dynamic> map) {
+    return Task(
+      title: map['title'],
+      description: map['description'] ?? '',
+      status: TaskStatus.values[map['status']],
+      // Convert int to enum
+      dueDate: map['dueDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['dueDate'])
+          : null,
+      priority: map['priority'],
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
+      updatedAt: map['updatedAt'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['updatedAt'])
+          : null,
+    );
+  }
 }
 
 class TaskDataManager extends ChangeNotifier {

@@ -1,34 +1,57 @@
 import 'package:flutter/cupertino.dart';
-
+import 'package:to_do/base_module/task_management/repository/task_repository_impl.dart';
 import '../model/task_model.dart';
 import 'package:flutter/material.dart';
+import '../repository/task_repository.dart';
 
 class TaskViewModel extends ChangeNotifier {
   List<List<Task>> allTaskList = [];
+  List<Task> allTaskListUnordered = [];
+  bool isLoading = false;
 
-  TaskDataManager dataManager = TaskDataManager();
+
+  TaskRepository repository = TaskRepositoryImpl();
 
   void getAllTaskList() async {
-    allTaskList = [
-      dataManager.getInProgressList(),
-      dataManager.getCompletedList(),
-      dataManager.getPendingList()
-    ];
+    isLoading = true;
+    notifyListeners();
+    allTaskListUnordered = await repository.getAllTask();
+    allTaskList = [getInProgressList(), getCompletedList(), getPendingList()];
+    print('yes data fatched');
+    isLoading = false;
+    notifyListeners();
+  }
+
+  List<Task> getInProgressList() {
+    List<Task> listOFTask = allTaskListUnordered;
+    return listOFTask
+        .where((element) => element.status == TaskStatus.inProgress)
+        .toList();
+  }
+
+  List<Task> getCompletedList() {
+    List<Task> listOFTask = allTaskListUnordered;
+    return listOFTask
+        .where((element) => element.status == TaskStatus.completed)
+        .toList();
+  }
+
+  List<Task> getPendingList() {
+    List<Task> listOFTask = allTaskListUnordered;
+    return listOFTask
+        .where((element) => element.status == TaskStatus.pending)
+        .toList();
   }
 
   void addNewTask(Task task) {
-    dataManager.addNewTask(task);
+    repository.addNewTask(task);
     getAllTaskList();
     notifyListeners();
   }
 
-  void removeATask(Task task) {
-    dataManager.removeTask(task);
-    getAllTaskList();
-    notifyListeners();
+  void removeATask(Task task) async {
+    repository.removeTask(task);
   }
-
-
 
   void changeThePriorityOfTask(Task task) {
     int newPriority; // Declare with a type and initialize
@@ -38,7 +61,8 @@ class TaskViewModel extends ChangeNotifier {
       newPriority = task.priority + 1; // Increment priority if it's not 3
     }
     task.update(priority: newPriority);
-    notifyListeners(); // Notify listeners to update the UI
+    repository.updateTask(task);
+    notifyListeners();
   }
 
   Color getPriorityColor(int priority) {
@@ -68,4 +92,6 @@ class TaskViewModel extends ChangeNotifier {
         return Colors.black;
     }
   }
+
+
 }

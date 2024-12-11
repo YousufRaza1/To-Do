@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:to_do/base_module/task_management/view/task_screen.dart';
+import 'task_management/repository/local_data_source.dart';
 
 class BottomNavBarScreen extends StatefulWidget {
   @override
@@ -56,12 +57,15 @@ class TaskTab extends StatelessWidget {
 }
 
 class StateTab extends StatelessWidget {
+  TaskLocalDataSource  datasource= TaskLocalDataSource();
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(
-        'State Screen',
-        style: TextStyle(fontSize: 24),
+      child: ElevatedButton(
+          onPressed: () {
+            datasource.deleteAllTasks();
+          }, 
+          child: Text('Delete all task')
       ),
     );
   }

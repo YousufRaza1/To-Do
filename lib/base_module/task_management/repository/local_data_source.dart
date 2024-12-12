@@ -40,7 +40,6 @@ class TaskLocalDataSource {
     );
   }
 
-  /// **Create a new task**
   Future<void> createTask(Task task) async {
     final db = await database;
     await db.insert('tasks', task.toMap(),
@@ -48,13 +47,11 @@ class TaskLocalDataSource {
     print('new task added to database');
   }
 
-  /// **Fetch all tasks**
   Future<List<Task>> fetchAllTasks() async {
     print('database fetch called');
     final db = await database;
     final maps = await db.query('tasks');
 
-    // Convert the List<Map<String, dynamic>> to List<Task>
     return maps.map((taskMap) => Task.fromMap(taskMap)).toList();
   }
 
@@ -86,7 +83,6 @@ class TaskLocalDataSource {
   }
 
 
-  /// **Delete a task by ID**
   Future<bool> deleteTask(String id) async {
     try {
       final db = await database;
@@ -98,7 +94,6 @@ class TaskLocalDataSource {
         whereArgs: [id],
       );
 
-      // If at least one row was deleted, return true
       if (rowsDeleted > 0) {
         print('Task deleted successfully');
         return true;
@@ -107,13 +102,11 @@ class TaskLocalDataSource {
         return false;
       }
     } catch (e) {
-      // Catch and log any exceptions that occur
       print('Failed to delete task: $e');
       return false;
     }
   }
 
-  /// **Delete all tasks**
   Future<void> deleteAllTasks() async {
     final db = await database;
     await db.delete('tasks');

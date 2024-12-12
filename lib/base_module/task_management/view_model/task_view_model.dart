@@ -53,28 +53,35 @@ class TaskViewModel extends ChangeNotifier {
     repository.removeTask(task);
   }
 
+  void updateTask(Task task) async {
+   await repository.updateTask(task);
+    getAllTaskList();
+    notifyListeners();
+  }
+
   void changeThePriorityOfTask(Task task) {
-    int newPriority; // Declare with a type and initialize
+    int newPriority;
     if (task.priority == 3) {
-      newPriority = 1; // If priority is 3, set it to 1
+      newPriority = 1;
     } else {
-      newPriority = task.priority + 1; // Increment priority if it's not 3
+      newPriority = task.priority + 1;
     }
     task.update(priority: newPriority);
     repository.updateTask(task);
     notifyListeners();
   }
 
+
   Color getPriorityColor(int priority) {
     switch (priority) {
       case 1:
-        return Colors.red.shade100; // High priority: Light Red
+        return Colors.red.shade100;
       case 2:
-        return Colors.orange.shade100; // Medium priority: Light Orange
+        return Colors.orange.shade100;
       case 3:
-        return Colors.green.shade100; // Low priority: Light Green
+        return Colors.green.shade100;
       default:
-        return Colors.grey.shade100; // Default color
+        return Colors.grey.shade100;
     }
   }
 

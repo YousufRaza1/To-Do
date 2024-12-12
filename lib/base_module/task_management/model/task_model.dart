@@ -2,23 +2,24 @@ import 'package:flutter/material.dart';
 import '../../common/util.dart';
 
 enum TaskStatus {
-  pending, // Task is not started
-  inProgress, // Task is currently being worked on
-  completed, // Task is completed
-  overdue, // Task's due date has passed without completion
+  pending,
+  inProgress,
+  completed,
+  overdue,
 }
 
 class Task extends ChangeNotifier {
-  final String id = generateId(); // Unique identifier for the task
-  String title; // Title of the task
-  String description; // Detailed description of the task (optional)
-  TaskStatus status; // Current status of the task
-  DateTime? dueDate; // Optional due date for the task
-  int priority; // Priority level: e.g., 1 (High), 2 (Medium), 3 (Low)
-  DateTime createdAt; // Timestamp when the task was created
-  DateTime? updatedAt; // Timestamp when the task was last updated
+  final String id;
+  String title;
+  String description;
+  TaskStatus status;
+  DateTime? dueDate;
+  int priority;
+  DateTime createdAt;
+  DateTime? updatedAt;
 
   Task({
+    required this.id,
     required this.title,
     this.description = '',
     this.status = TaskStatus.pending,
@@ -85,6 +86,7 @@ class Task extends ChangeNotifier {
   // Create Task from Map<String, dynamic>
   factory Task.fromMap(Map<String, dynamic> map) {
     return Task(
+      id: map['id'],
       title: map['title'],
       description: map['description'] ?? '',
       status: TaskStatus.values[map['status']],

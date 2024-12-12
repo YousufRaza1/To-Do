@@ -3,10 +3,13 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../model/task_model.dart';
 import '../view_model/task_view_model.dart';
-import 'task_details_screen.dart';
 import 'add_new_task_screen.dart';
+import 'widget/empty_list_widget.dart';
+import 'widget/task_item_widget.dart';
 
 class TaskScreen extends StatefulWidget {
+  const TaskScreen({super.key});
+
   @override
   _TaskScreenState createState() => _TaskScreenState();
 }
@@ -39,13 +42,13 @@ class _TaskScreenState extends State<TaskScreen> {
             viewModel.getAllTaskList(); // Refresh the task list after returning
           });
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       body: ListenableBuilder(
         listenable: viewModel, // Listen to changes in the viewModel
         builder: (context, _) {
           if (viewModel.isLoading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           return ListView.builder(
@@ -77,102 +80,22 @@ class _TaskScreenState extends State<TaskScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       sectionTitle,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.blue),
                     ),
                   ),
-                  sectionTasks.length == 0
-                      ? _buildEmptyView()
+                  sectionTasks.isEmpty
+                      ? EmptyListWidget()
                       : ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: sectionTasks.length,
                           itemBuilder: (context, taskIndex) {
                             Task task = sectionTasks[taskIndex];
 
-                            return Dismissible(
-                              key: ValueKey(task.id),
-                              direction: DismissDirection.endToStart,
-                              background: Container(
-                                color: Colors.red,
-                                padding: EdgeInsets.symmetric(horizontal: 20),
-                                alignment: Alignment.centerRight,
-                                child: Icon(Icons.delete, color: Colors.white),
-                              ),
-                              onDismissed: (direction) {
-                                // Remove the task from the list
-                                viewModel.removeATask(task);
-
-                                // Optionally show a snackbar for feedback
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('${task.title} deleted'),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 4, horizontal: 8),
-                                decoration: BoxDecoration(
-                                  color:
-                                      viewModel.getPriorityColor(task.priority),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                height: 100,
-                                child: ListTile(
-                                  title: Text(
-                                    task.title,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  subtitle: Text(
-                                    task.description,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  trailing: Container(
-                                    height: 130,
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                            'Priority: ${task.priority == 3 ? 'low' : task.priority == 2 ? 'medium' : 'high'}'),
-                                        SizedBox(height: 8),
-                                        GestureDetector(
-                                          onTap: () {
-                                            viewModel
-                                                .changeThePriorityOfTask(task);
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.blue,
-                                                borderRadius:
-                                                    BorderRadius.circular(2)),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text("Change Priority"),
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            TaskDetailsScreen(task: task),
-                                      ),
-                                    ).then((_) {
-                                      viewModel.getAllTaskList();
-                                    });
-                                  },
-                                ),
-                              ),
-                            );
+                            return TaskItemWidget(viewModel: viewModel, task: task);
                           },
                         ),
                 ],
@@ -184,20 +107,5 @@ class _TaskScreenState extends State<TaskScreen> {
     );
   }
 
-  Widget _buildEmptyView() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.task_alt, size: 80, color: Colors.grey),
-          SizedBox(height: 16),
-          Text(
-            'No tasks available',
-            style: TextStyle(fontSize: 18, color: Colors.grey),
-          ),
-          SizedBox(height: 8)
-        ],
-      ),
-    );
-  }
+
 }

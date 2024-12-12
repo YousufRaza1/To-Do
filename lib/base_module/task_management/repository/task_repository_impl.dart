@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'task_repository.dart';
 import 'local_data_source.dart';
 
-class TaskRepositoryImpl extends ChangeNotifier implements TaskRepository {
+class TaskRepositoryImpl implements TaskRepository {
   TaskLocalDataSource localDataSource = TaskLocalDataSource();
 
   @override

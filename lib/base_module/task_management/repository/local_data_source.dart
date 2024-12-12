@@ -31,7 +31,7 @@ class TaskLocalDataSource {
             description TEXT,
             status INTEGER NOT NULL,
             dueDate INTEGER,
-            priority INTEGER NOT NULL,
+            priority  NOTINTEGER NULL,
             createdAt INTEGER NOT NULL,
             updatedAt INTEGER
           )

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:to_do/base_module/task_management/view/task_screen.dart';
 import 'task_management/repository/local_data_source.dart';
+import 'package:to_do/base_module/life_cycle/view/example1_screen.dart';
 
 class BottomNavBarScreen extends StatefulWidget {
   @override
@@ -13,7 +14,9 @@ class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
   // List of screens for each tab
   final List<Widget> _screens = [
     TaskScreen(),
+    Example1Screen(),
     StateTab(),
+
   ];
 
   void _onItemTapped(int index) {
@@ -33,6 +36,10 @@ class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.task),
             label: 'Task',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.library_books),
+            label: 'LifeCycle',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.assessment),

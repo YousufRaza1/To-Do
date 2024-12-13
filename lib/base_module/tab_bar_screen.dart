@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:to_do/base_module/task_management/view/task_screen.dart';
 import 'task_management/repository/local_data_source.dart';
-import 'package:to_do/base_module/life_cycle/view/example1_screen.dart';
+import 'package:to_do/base_module/state_management//view/example1_screen.dart';
 
 class BottomNavBarScreen extends StatefulWidget {
   @override
